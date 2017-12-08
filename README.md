@@ -1,6 +1,72 @@
 ## ARouter 简单实用
 
-[ARouter GitHub官方源码地址](https://github.com/alibaba/ARouter)
+### 详细的API说明
+```
+// 构建标准的路由请求
+ARouter.getInstance().build("/home/main").navigation();
+
+// 构建标准的路由请求，并指定分组
+ARouter.getInstance().build("/home/main", "ap").navigation();
+
+// 构建标准的路由请求，通过Uri直接解析
+Uri uri;
+ARouter.getInstance().build(uri).navigation();
+
+// 构建标准的路由请求，startActivityForResult
+// navigation的第一个参数必须是Activity，第二个参数则是RequestCode
+ARouter.getInstance().build("/home/main", "ap").navigation(this, 5);
+
+// 直接传递Bundle
+Bundle params = new Bundle();
+ARouter.getInstance()
+	.build("/home/main")
+	.with(params)
+	.navigation();
+
+// 指定Flag
+ARouter.getInstance()
+	.build("/home/main")
+	.withFlags();
+	.navigation();
+
+// 获取Fragment
+Fragment fragment = (Fragment) ARouter.getInstance().build("/test/fragment").navigation();
+					
+// 对象传递
+ARouter.getInstance()
+	.withObject("key", new TestObj("Jack", "Rose"))
+	.navigation();
+
+// 觉得接口不够多，可以直接拿出Bundle赋值
+ARouter.getInstance()
+	    .build("/home/main")
+	    .getExtra();
+
+// 转场动画(常规方式)
+ARouter.getInstance()
+    .build("/test/activity2")
+    .withTransition(R.anim.slide_in_bottom, R.anim.slide_out_bottom)
+    .navigation(this);
+
+// 转场动画(API16+)
+ActivityOptionsCompat compat = ActivityOptionsCompat.
+    makeScaleUpAnimation(v, v.getWidth() / 2, v.getHeight() / 2, 0, 0);
+
+// ps. makeSceneTransitionAnimation 使用共享元素的时候，需要在navigation方法中传入当前Activity
+
+ARouter.getInstance()
+	.build("/test/activity2")
+	.withOptionsCompat(compat)
+	.navigation();
+        
+// 使用绿色通道(跳过所有的拦截器)
+ARouter.getInstance().build("/home/main").greenChannel().navigation();
+
+// 使用自己的日志工具打印日志
+ARouter.setLogger();
+```
+
+详细介绍请跳转[ARouter GitHub官方源码地址](https://github.com/alibaba/ARouter)
 
 ### 项目引用
 1.app下的build.gradle添加依赖和配置:
@@ -104,7 +170,7 @@ NavigationCallback是监听回调方法，我们通过代码理解一下：
 NavCallback  cal = new NavCallback() {
       @Override
       public void onArrival(Postcard postcard) {
-              //界面到达
+              //界面跳转完毕
               Log.d(TAG, "MainActivity == onArrival  postcard.getPath = "+postcard.getPath());
       }
 
@@ -339,7 +405,22 @@ public class Test {
 }
 
 ```
+### 自定义全局降级策略
+```
+// 实现DegradeService接口，并加上一个Path内容任意的注解即可
+@Route(path = "/xxx/xxx")
+public class DegradeServiceImpl implements DegradeService {
+  @Override
+  public void onLost(Context context, Postcard postcard) {
+	// do something.
+  }
 
+  @Override
+  public void init(Context context) {
+
+  }
+}
+```
 
 
 
