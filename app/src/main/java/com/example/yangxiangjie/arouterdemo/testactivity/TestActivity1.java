@@ -19,7 +19,7 @@ public class TestActivity1 extends AppCompatActivity {
     @Autowired
     int age;
     @Autowired
-    String boyfriend;
+    String friend;
 
 
     @Override
@@ -38,8 +38,8 @@ public class TestActivity1 extends AppCompatActivity {
             }
 
 
-            if (!TextUtils.isEmpty(name) || !TextUtils.isEmpty(boyfriend)) {
-                String format = String.format("name = %s, \n age = %s,\n boyfriend = %s", name, age, boyfriend);
+            if (!TextUtils.isEmpty(name) || !TextUtils.isEmpty(friend)) {
+                String format = String.format("name = %s, \n age = %s,\n friend = %s", name, age, friend);
                 if (!TextUtils.isEmpty(format)) {
                     Log.d("TestActivity1", format);
                 }

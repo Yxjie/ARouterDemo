@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ARouter.getInstance().build("/test/activity1")
                         .withString("name", "LiNa")
                         .withInt("age", 26)
-                        .withString("boyfriend", "yxjie").navigation();
+                        .withString("friend", "yxjie").navigation();
 
                 break;
 

@@ -94,7 +94,9 @@ b.传值跳转
          .navigation();
 ```
 >navigation简单介绍
-两个参数navigation有两个：<br/>一是：navigation(Context context, NavigationCallback callback)；<br>二是：navigation(Activity mContext, int requestCode)；
+两个参数navigation有两个：<br/>
+一是：navigation(Context context, NavigationCallback callback)；<br>
+二是：navigation(Activity mContext, int requestCode)；
 这两种方式，第一个参数是上下文，第二个参数NavigationCallback或requestCode
 
 NavigationCallback是监听回调方法，我们通过代码理解一下：
@@ -131,7 +133,91 @@ NavCallback  cal = new NavCallback() {
         }
    }
 ```
+### ARouter通过URL实现界面跳转以及数据传递
+1.创建用于监听Schame事件的SchemeFilterActivity,之后直接把url传递给ARouter即可
+```
+public class SchemeFilterActivity extends Activity{
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Uri uri = getIntent().getData();
+        ARouter.getInstance().build(uri).navigation(this, new NavCallback() {
+            @Override
+            public void onArrival(Postcard postcard) {
+                finish();
+            }
+        });
+    }
+}
+```
+2.在AndroidManifest.xml中注册该Activity,并配置该Activity的host，scheme值
+```
+ <!-- 通过Url跳转 -->
+        <activity android:name=".SchemeFilterActivity">
+            <intent-filter>
+                <data
+                    android:host="test.yxjie.com"
+                    android:scheme="arouter"/>
 
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+
+                <!--html 里面的App Link-->
+                <data
+                    android:host="test.yxjie.com"
+                    android:scheme="http"/>
+            </intent-filter>
+        </activity>
+```
+3.ARouter通过url方式进行界面跳转：<br>
+a.原生界面跳转【规则：scheme://host/path】<br>
+```
+ //通过Uri跳转传值
+ Uri uri = Uri.parse("arouter://test.yxjie.com/test/activity1");
+ ARouter.getInstance().build(uri)
+         .withString("key1", "我是Uri过来的")
+         .withInt("key2", 2).navigation();
+```
+
+b.H5界面跳转
+```
+@Route(path = "/test/activity1")
+public class TestActivity1 extends AppCompatActivity {
+
+    @Autowired
+    String name;
+    @Autowired
+    int age;
+    @Autowired
+    String friend;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_test1);
+        //此处一定要加，网上有些教程说可不加 经过验证 不加获取不到数据
+        ARouter.getInstance().inject(this);
+        if (!TextUtils.isEmpty(name) || !TextUtils.isEmpty(friend)) {
+                String format = String.format("name = %s, \n age = %s,\n friend = %s", name, age, friend);
+                if (!TextUtils.isEmpty(format)) {
+                    Log.d("TestActivity1", format);
+                }
+            }
+    }
+}
+
+//原生方法调用传值
+ARouter.getInstance().build("/test/activity1")
+                        .withString("name", "LiNa")
+                        .withInt("age", 26)
+                        .withString("friend", "yxjie").navigation();
+<!--H5界面调用传值-->
+<p><a href="arouter://m.aliyun.com/test/activity3?name=alex&age=18&friend=jerry">arouter://m.aliyun.com/test/activity3?name=alex&age=18&friend=jerry</a></p>
+<p><a href="http://test.yxjie.com/test/activity1">http://test.yxjie.com/test/activity1</a></p>
+```
 
 
 
