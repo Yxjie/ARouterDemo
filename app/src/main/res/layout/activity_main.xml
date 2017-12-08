@@ -55,4 +55,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="ByType调用服务"/>
+
+    <Button
+        android:id="@+id/btn_degrade"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="调用降级策略"/>
 </LinearLayout>

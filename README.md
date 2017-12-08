@@ -420,7 +420,9 @@ public class DegradeServiceImpl implements DegradeService {
 
   }
 }
+
 ```
+* 注：单独降级的方式优先于全局降级
 
 
 

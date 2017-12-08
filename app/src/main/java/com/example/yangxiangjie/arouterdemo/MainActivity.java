@@ -30,6 +30,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         findViewById(R.id.btn_by_name).setOnClickListener(this);
         findViewById(R.id.btn_by_type).setOnClickListener(this);
+
+        findViewById(R.id.btn_degrade).setOnClickListener(this);
     }
 
     @Override
@@ -134,6 +136,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.btn_by_type:
                 ARouter.getInstance().navigation(HelloService.class).sayHello("ByType调用服务");
+                break;
+
+            case R.id.btn_degrade:
+                //调用降级策略
+
+                ARouter.getInstance().build("/test/yxjie").navigation();
+
                 break;
 
             default:
