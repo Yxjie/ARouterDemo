@@ -9,6 +9,8 @@ import android.view.View;
 import com.alibaba.android.arouter.facade.Postcard;
 import com.alibaba.android.arouter.facade.callback.NavCallback;
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.example.yangxiangjie.arouterdemo.testservice.HelloService;
+import com.example.yangxiangjie.arouterdemo.testservice.HelloServiceImpl;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -25,6 +27,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.btn_jump_by_uri).setOnClickListener(this);
         findViewById(R.id.btn_jump_webview_by_uri).setOnClickListener(this);
         findViewById(R.id.btn_interceptor).setOnClickListener(this);
+
+        findViewById(R.id.btn_by_name).setOnClickListener(this);
+        findViewById(R.id.btn_by_type).setOnClickListener(this);
     }
 
     @Override
@@ -38,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             @Override
                             public void onArrival(Postcard postcard) {
                                 //界面到达
-                                Log.d(TAG, "MainActivity == onArrival  postcard.getPath = "+postcard.getPath());
+                                Log.d(TAG, "MainActivity == onArrival  postcard.getPath = " + postcard.getPath());
                             }
 
                             @Override
@@ -121,6 +126,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 Log.d("MainActivity", "被拦截器 拦截了");
                             }
                         });
+                break;
+
+            case R.id.btn_by_name:
+                ((HelloServiceImpl) ARouter.getInstance().build("/service/hello").navigation()).sayHello("ByName调用服务");
+                break;
+
+            case R.id.btn_by_type:
+                ARouter.getInstance().navigation(HelloService.class).sayHello("ByType调用服务");
                 break;
 
             default:

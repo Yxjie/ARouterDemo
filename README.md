@@ -219,6 +219,128 @@ ARouter.getInstance().build("/test/activity1")
 <p><a href="http://test.yxjie.com/test/activity1">http://test.yxjie.com/test/activity1</a></p>
 ```
 
+### 声明拦截器(拦截跳转过程，面向切面编程)
+```
+@Interceptor(priority = 8, name = "测试用拦截器")
+public class TestInterceptor implements IInterceptor {
+
+    private Context mContext;
+
+    @Override
+    public void process(Postcard postcard, InterceptorCallback callback) {
+        if (TextUtils.equals("/test/interceptor", postcard.getPath())) {
+            //此方法不在UI线程
+            Log.d("TestInterceptor", "路径/test/interceptor 被拦截了");
+            postcard.withString("extra", "我是 测试用拦截器 添加的拦截数据");
+            callback.onContinue(postcard);
+        } else {
+            callback.onContinue(postcard);
+        }
+    }
+
+    @Override
+    public void init(Context context) {
+        mContext = context;
+    }
+}
+
+//拦截器测试类
+@Route(path = "/test/interceptor")
+public class InterceptorActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_interceptor);
+
+        if (getIntent() != null) {
+            String extra = getIntent().getStringExtra("extra");
+            if (!TextUtils.isEmpty(extra)) {
+                ((TextView) findViewById(R.id.txt_extra)).setText(extra);
+            }
+        }
+    }
+}
+
+//界面调用跳转拦截
+ //测试拦截器
+ ARouter.getInstance().build("/test/interceptor")
+        .navigation(v.getContext(), new NavCallback() {
+             @Override
+              public void onArrival(Postcard postcard) {
+                      Log.d(TAG, "onArrival running...");
+              }
+
+              @Override
+              public void onInterrupt(Postcard postcard) {
+                     super.onInterrupt(postcard);
+                      Log.d("MainActivity", "被拦截器 拦截了");
+               }
+  });
+
+```
+
+### 服务管理(一) 暴露服务
+```
+// 声明接口,其他组件通过接口来调用服务
+public interface HelloService extends IProvider {
+
+    void sayHello(String msg);
+
+}
+
+// 实现接口
+@Route(path = "/service/hello")
+public class HelloServiceImpl implements HelloService {
+
+    private Context mContext;
+
+    @Override
+    public void sayHello(String msg) {
+        Toast.makeText(mContext, msg, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void init(Context context) {
+        mContext = context;
+    }
+}
+
+```
+### 服务管理(二) 发现服务
+```
+public class Test {
+    @Autowired
+    HelloService helloService;
+
+    @Autowired(name = "/service/hello")
+    HelloService helloService2;
+
+    HelloService helloService3;
+
+    HelloService helloService4;
+
+    public Test() {
+	ARouter.getInstance().inject(this);
+    }
+
+    public void testService() {
+	 // 1. (推荐)使用依赖注入的方式发现服务,通过注解标注字段,即可使用，无需主动获取
+	 // Autowired注解中标注name之后，将会使用byName的方式注入对应的字段，不设置name属性，会默认使用byType的方式发现服务(当同一接口有多个实现的时候，必须使用byName的方式发现服务)
+	helloService.sayHello("Vergil");
+	helloService2.sayHello("Vergil");
+
+	// 2. 使用依赖查找的方式发现服务，主动去发现服务并使用，下面两种方式分别是byName和byType
+	helloService3 = ARouter.getInstance().navigation(HelloService.class);
+	helloService4 = (HelloService) ARouter.getInstance().build("/service/hello").navigation();
+	helloService3.sayHello("Vergil");
+	helloService4.sayHello("Vergil");
+    }
+}
+
+```
+
+
 
 
 

@@ -42,4 +42,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="测试拦截器"/>
+
+
+    <Button
+        android:id="@+id/btn_by_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ByName调用服务"/>
+
+    <Button
+        android:id="@+id/btn_by_type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ByType调用服务"/>
 </LinearLayout>
