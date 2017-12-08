@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.yangxiangjie.arouterdemo.MainActivity">
+
+    <Button
+        android:id="@+id/btn_simple_jump"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="简单跳转界面"/>
+
+    <Button
+        android:id="@+id/btn_jump_with_data"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="带值跳转界面[传统intent方式]"/>
+
+    <Button
+        android:id="@+id/btn_jump_with_data_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="带值跳转界面[ARouter依赖注入方式]"/>
+
+    <Button
+        android:id="@+id/btn_jump_by_uri"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="通过Uri跳转传值"/>
+
+    <Button
+        android:id="@+id/btn_jump_webview_by_uri"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="通过Uri加载本地Html"/>
+
+    <Button
+        android:id="@+id/btn_interceptor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="测试拦截器"/>
+</LinearLayout>
