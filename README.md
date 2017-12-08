@@ -39,15 +39,52 @@ if (BuildConfig.DEBUG) {
         }
 ARouter.init(this);
 ```
+3.添加ARouter混淆
+```
+#ARouter混淆
+-keep public class com.alibaba.android.arouter.routes.**{*;}
+-keep class * implements com.alibaba.android.arouter.facade.template.ISyringe{*;}
 
+# 如果使用了 byType 的方式获取 Service，需添加下面规则，保护接口
+-keep interface * implements com.alibaba.android.arouter.facade.template.IProvider
+
+# 如果使用了 单类注入，即不定义接口实现 IProvider，需添加下面规则，保护实现
+-keep class * implements com.alibaba.android.arouter.facade.template.IProvider
+```
 ### ARouter页面简单跳转以及传值跳转
 a.简单跳转：
 ```
+ @Route(path = "/test/activity1")//路由路径
+ public class TestActivity1 extends AppCompatActivity {
+            ......
+ }
+ 
  ARouter.getInstance().build("/test/activity1")..navigation();
 ```
+
 b.传值跳转
 [支持基本数据类型，bundle，以及对象]
 ```
+ @Route(path = "/test/activity1")//路由路径
+ public class TestActivity1 extends AppCompatActivity {
+            @Override
+               protected void onCreate(Bundle savedInstanceState) {
+                   super.onCreate(savedInstanceState);
+                   setContentView(R.layout.activity_test1);
+                   if (getIntent() != null) {
+                       //带值传递跳转[跳转方法二]
+                       TextView textView = findViewById(R.id.txt_test1);
+                       String value1 = getIntent().getStringExtra("key1");
+                       int value2 = getIntent().getIntExtra("key2", 0);
+           
+                       if (!TextUtils.isEmpty(value1) || value2 != 0) {
+                           textView.setText("传过来的值是：" + "value1 = " + value1 + " ；value2 = " + value2);
+                       }
+                   }
+               }
+ }
+
+
 / Bundle bundle = new Bundle();
   ARouter.getInstance().build("/test/activity1")
          .withString("key1", "Test")
